@@ -5,18 +5,30 @@ from filesystem import Folder, File
 from action import *
 from flask import request
 from os import error
+from flask.ext.script import Manager
+
 
 app = Flask(__name__)
 app.config.update(
     DEBUG=True,
     FILES_ROOT=os.path.dirname(os.path.abspath(__file__)),
 )
+manager = Manager(app)
+
 
 @app.route('/')
 @app.route('/files/<path:path>')
 def index(path=''):
     path_join = os.path.join(app.config['FILES_ROOT'], path)
     if os.path.isdir(path_join):
+        try:
+            folders_page = int(request.args.get('folders_page', 1))
+        except ValueError:
+            folders_page = 1
+        try:
+            files_page = int(request.args.get('files_page', 1))
+        except ValueError:
+            files_page = 1
         folder = Folder(app.config['FILES_ROOT'], path)
         folder.read()
         return render_template('folder.html', folder=folder)
@@ -48,4 +60,5 @@ def create_directory(path = "/"):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    #app.run(host="0.0.0.0")
+    manager.run()
