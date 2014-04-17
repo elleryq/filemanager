@@ -6,6 +6,21 @@ from action import View
 import string
 
 
+class PaginationList(list):
+    def get_page(self, page=1, per_page=10):
+        if page<1:
+            raise Exception("Spcified page is not existed.")
+        start = (page-1)*per_page
+
+        count = len(self)
+        end = page*per_page
+        if start>count:
+            raise Exception("Spcified page is not existed.")
+        if end>count:
+            end = count
+        return self[start:end]
+
+
 class Node(object):
     def __init__(self, root, path):
         splitetPath = string.split(path,"/")
@@ -43,8 +58,10 @@ class Folder(Node):
     
     def __init__(self, root, path):
         super(Folder, self).__init__(root, path)
-        self.files = []
-        self.folders = []
+        # self.files = []
+        # self.folders = []
+        self.files = PaginationList()
+        self.folders = PaginationList()
 
     @property
     def name(self):
