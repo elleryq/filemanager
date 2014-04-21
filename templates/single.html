@@ -31,12 +31,12 @@
             <h3 class="page-header">Files:</h3>
             <ul class="nav nav-tabs nav-stacked">
             {% for node in folder.nodes %}
-                {% if node.isdir() %}
+                {%- if node.isdir() -%}
                 <li><a href="/files/{{ node.path }}"> <img src="/static/img/folder.png" width="20" alt="icon"> {{ node.name }}</a></li>
-                {% endif %}
-                {% if node.isfile() %}
+                {%- endif %}
+                {%- if node.isfile() -%}
                 <li><a href="/files/{{ node.path }}"> <img src="/static/img/{{ node.extension }}.png" width="20" alt="icon"> {{ node.name }}</a></li>
-                {% endif %}
+                {%- endif %}
             {% endfor %}
             </ul>
         </div>
