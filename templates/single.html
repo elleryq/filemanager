@@ -7,6 +7,18 @@
             <h1 class="page-header">{{ folder.name }}</h1>
         </div>
     </div>
+    {% if folder.chunks %}
+    <div class="row">
+        <ul class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            {% for chunk in folder.chunks() %}
+                <li>
+                    <a href="/files/{{ chunk.path }}">{{ chunk.chunk }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
     <div class="row">
         <div class="span10">
             <form action="new_directory" method="post">
@@ -16,29 +28,30 @@
             </form> 
         </div>
     </div>
-    {% if folder.chunks %}
-    <ul class="breadcrumb">
-        <li><a href="/">Home</a></li>
-        {% for chunk in folder.chunks() %}
-            <li>
-                <a href="/files/{{ chunk.path }}">{{ chunk.chunk }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
     <div class="row">
         <div class="span10">
-            <h3 class="page-header">Files:</h3>
-            <ul class="nav nav-tabs nav-stacked">
+            <h4 class="page-header">Files:</h3>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Filename</th>
+                    </tr>
+                </thead>
+                <tbody>
             {% for node in folder.nodes %}
+                <tr>
+                <td><input type="checkbox" name="chk{{ loop.index }}" id="chk{{ loop.index }}"/></td>
                 {%- if node.isdir() -%}
-                <li><a href="/files/{{ node.path }}"> <img src="/static/img/folder.png" width="20" alt="icon"> {{ node.name }}</a></li>
+                <td><a href="/files/{{ node.path }}"> <img src="/static/img/folder.png" width="20" alt="icon"> {{ node.name }}</a></td>
                 {%- endif %}
                 {%- if node.isfile() -%}
-                <li><a href="/files/{{ node.path }}"> <img src="/static/img/{{ node.extension }}.png" width="20" alt="icon"> {{ node.name }}</a></li>
+                <td><a href="/files/{{ node.path }}"> <img src="/static/img/{{ node.extension }}.png" width="20" alt="icon"> {{ node.name }}</a></td>
                 {%- endif %}
+                </tr>
             {% endfor %}
-            </ul>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
