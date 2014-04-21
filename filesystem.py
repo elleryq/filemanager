@@ -44,6 +44,15 @@ class Node(object):
     def isfile(self):
         return isfile(join(self.root, self.path))
 
+    def key(self):
+        if self.isdir():
+            t = 'D'
+        elif self.isfile():
+            t = 'F'
+        else:
+            t = ' '
+        return '{0}{1}'.format(t, self.name)
+
 
 class File(Node):
     avaliable_actions = [View, ]
@@ -93,3 +102,4 @@ class Folder(Node):
                 node = File(self.root, full_path)
                 self.files.append(node)
             self.nodes.append(node)
+        self.nodes.sort(key=lambda node: node.key())
