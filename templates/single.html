@@ -1,0 +1,46 @@
+{% extends "index.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12">
+            <h1 class="page-header">{{ folder.name }}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <form action="new_directory" method="post">
+                <input type="text" name="new_directory_name">
+                <input type="submit" value="Create directory">
+                <input type="hidden" value="{{folder.path}}" name="directory_root">
+            </form> 
+        </div>
+    </div>
+    {% if folder.chunks %}
+    <ul class="breadcrumb">
+        <li><a href="/">Home</a>
+            <span class="divider">/</span>
+        </li>
+        {% for chunk in folder.chunks() %}
+            <li>
+                <a href="/files/{{ chunk.path }}">{{ chunk.chunk }}</a>
+                <span class="divider">/</span>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="row">
+        <div class="span12">
+            <h3 class="page-header">Files:</h3>
+            <ul class="nav nav-tabs nav-stacked">
+            {% for node in folder.nodes %}
+                {% if node.isdir() %}
+                <li><a href="/files/{{ node.path }}"> <img src="/static/img/folder.png" width="20" alt="icon"> {{ node.name }}</a></li>
+                {% endif %}
+                {% if node.isfile() %}
+                <li><a href="/files/{{ node.path }}"> <img src="/static/img/{{ node.extension }}.png" width="20" alt="icon"> {{ node.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

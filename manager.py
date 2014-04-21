@@ -10,7 +10,7 @@ from flask.ext.script import Manager
 
 app = Flask(__name__)
 app.config.update(
-    DEBUG=True,
+#    DEBUG=True,  # This line cause run fail, why??
     FILES_ROOT=os.path.dirname(os.path.abspath(__file__)),
 )
 manager = Manager(app)
@@ -31,23 +31,26 @@ def index(path=''):
             files_page = 1
         folder = Folder(app.config['FILES_ROOT'], path)
         folder.read()
-        return render_template('folder.html', folder=folder)
+        # return render_template('folder.html', folder=folder)
+        return render_template('single.html', folder=folder)
     else:
         my_file = File(app.config['FILES_ROOT'], path)
         context = my_file.apply_action(View)
         folder = Folder(app.config['FILES_ROOT'], my_file.get_path())
-        if context == None:
+        if context is None:
             return render_template('file_unreadable.html', folder=folder)
         return render_template('file_view.html', text=context['text'], file=my_file, folder=folder)
+
 
 @app.route('/search', methods=['POST'])
 def search():
     q = request.form['q']
-    return render_template('search.html', request = q)
+    return render_template('search.html', request=q)
+
 
 @app.route('/new_directory', methods=["POST"])
 @app.route('/<path:path>/new_directory', methods=["POST"])
-def create_directory(path = "/"):
+def create_directory(path="/"):
     dirname = request.form["new_directory_name"]
     directory_root = request.form["directory_root"]
     full_path = os.path.join(directory_root, dirname)
@@ -56,9 +59,8 @@ def create_directory(path = "/"):
     except error:
         pass
     return redirect('/files/' + directory_root)
-    
 
 
 if __name__ == '__main__':
-    #app.run(host="0.0.0.0")
-    manager.run()
+    app.run(host="0.0.0.0")
+    #manager.run() # it also cause error, why??
