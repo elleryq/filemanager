@@ -1,13 +1,14 @@
 {% extends "index.html" %}
 
 {% block content %}
+<div class="container">
     <div class="row">
-        <div class="span12">
+        <div class="span10">
             <h1 class="page-header">{{ folder.name }}</h1>
         </div>
     </div>
     <div class="row">
-        <div class="span12">
+        <div class="span10">
             <form action="new_directory" method="post">
                 <input type="text" name="new_directory_name">
                 <input type="submit" value="Create directory">
@@ -17,19 +18,16 @@
     </div>
     {% if folder.chunks %}
     <ul class="breadcrumb">
-        <li><a href="/">Home</a>
-            <span class="divider">/</span>
-        </li>
+        <li><a href="/">Home</a></li>
         {% for chunk in folder.chunks() %}
             <li>
                 <a href="/files/{{ chunk.path }}">{{ chunk.chunk }}</a>
-                <span class="divider">/</span>
             </li>
         {% endfor %}
     </ul>
     {% endif %}
     <div class="row">
-        <div class="span12">
+        <div class="span10">
             <h3 class="page-header">Files:</h3>
             <ul class="nav nav-tabs nav-stacked">
             {% for node in folder.nodes %}
@@ -43,4 +41,5 @@
             </ul>
         </div>
     </div>
+</div>
 {% endblock %}

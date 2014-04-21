@@ -5,6 +5,7 @@ from filesystem import Folder, File
 from action import *
 from flask import request
 from os import error
+from flask.ext.bootstrap import Bootstrap
 from flask.ext.script import Manager
 
 
@@ -13,6 +14,7 @@ app.config.update(
 #    DEBUG=True,  # This line cause run fail, why??
     FILES_ROOT=os.path.dirname(os.path.abspath(__file__)),
 )
+bootstrap = Bootstrap(app)
 manager = Manager(app)
 
 
