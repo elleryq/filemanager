@@ -11,7 +11,7 @@ from flask.ext.script import Manager
 
 app = Flask(__name__)
 app.config.update(
-#    DEBUG=True,  # This line cause run fail, why??
+    DEBUG=True,
     FILES_ROOT=os.path.dirname(os.path.abspath(__file__)),
 )
 bootstrap = Bootstrap(app)
@@ -41,7 +41,10 @@ def index(path=''):
         folder = Folder(app.config['FILES_ROOT'], my_file.get_path())
         if context is None:
             return render_template('file_unreadable.html', folder=folder)
-        return render_template('file_view.html', text=context['text'], file=my_file, folder=folder)
+        return render_template('file_view.html',
+                               text=context['text'],
+                               file=my_file,
+                               folder=folder)
 
 
 @app.route('/search', methods=['POST'])
@@ -64,5 +67,4 @@ def create_directory(path="/"):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
-    #manager.run() # it also cause error, why??
+    manager.run()
