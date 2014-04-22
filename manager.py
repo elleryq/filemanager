@@ -1,21 +1,29 @@
 # -*- coding: utf-8 -*-
 import os
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, url_for, flash
 from filesystem import Folder, File
 from action import *
 from flask import request
 from os import error
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.script import Manager
+from werkzeug import secure_filename
+from flask.logging import create_logger
+from shutil import move
 
+
+UPLOAD_FOLDER = '/tmp'
 
 app = Flask(__name__)
 app.config.update(
     DEBUG=True,
     FILES_ROOT=os.path.dirname(os.path.abspath(__file__)),
+    UPLOAD_FOLDER=UPLOAD_FOLDER,
+    SECRET_KEY='THIS IS AN INSECURE SECRET',
 )
 bootstrap = Bootstrap(app)
 manager = Manager(app)
+logger = create_logger(app)
 
 
 @app.route('/')
@@ -64,6 +72,39 @@ def create_directory(path="/"):
     except error:
         pass
     return redirect('/files/' + directory_root)
+
+
+@app.route('/upload', methods=["GET", "POST"])
+def upload():
+    if request.method == 'POST':
+        location = request.form.get("directory_root", "")
+        if location:
+            # TODO: Need to check.
+            pass
+        else:
+            location = app.config['FILES_ROOT']
+
+        uploaded_files = request.files.getlist("file[]")
+        filenames = []
+        for f in uploaded_files:
+            if f:
+                logger.debug(os.path.basename(f.filename))
+                filename = secure_filename(f.filename)
+                temporary_path = os.path.join(
+                    app.config['UPLOAD_FOLDER'],
+                    filename)
+                f.save(temporary_path)
+
+                actual_path = os.path.join(
+                    location,
+                    os.path.basename(f.filename))
+                # TODO: consider if actual_path is existed.
+                move(temporary_path, actual_path)
+
+                filenames.append(filename)
+        flash("Files are saved.")
+        return redirect(url_for('index'))
+    return render_template('upload.html')
 
 
 if __name__ == '__main__':

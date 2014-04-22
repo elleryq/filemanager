@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="span10">
+            <h1 class="page-header">Upload</h1>
+        </div>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" multiple="" name="file[]"/>
+            <input type="submit" value="Upload"/>
+        </form>
+    </div>
+</div>
+{% endblock %}
